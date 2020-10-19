@@ -41,23 +41,29 @@ def change_bfactor():
     pdb_out_list = pdb_in_list.copy()
     
     first_res_pdb = int(pdb_in_list[0][22:26])
-    #print(first_res_pdb+pdb_start_index)
+    print(first_res_pdb+pdb_start_index)
     last_res_pdb = int(pdb_in_list[-1][22:26])
-    #print(last_res_pdb, 'last')
-#    quit()
+    print(last_res_pdb, 'last')
+
     pdb_index_to_color=first_res_pdb+pdb_start_index
     pdb_stop_color = last_res_pdb-pdb_end_index
-    #print(pdb_stop_color, 'stop')
+    print(pdb_stop_color, 'stop')
+    #quit()
     pdb_range = list(range(pdb_stop_color, pdb_len))
-    #print(pdb_range)
+    print(pdb_range)
     df_index_to_color=seq_start_index 
     print(pdb_range)
+    #quit()
+    print(df_index_to_color, reactivities_df.shape[0], seq_end_index)
+#    quit()
     for i in range(df_index_to_color, reactivities_df.shape[0]-seq_end_index):  # go through the reactivity df
         for k in range(0, len(pdb_in_list)):  # go through the whole pdb
             if (int(pdb_in_list[k][22:26]) == pdb_index_to_color) and (int(pdb_in_list[k][22:26]) not in pdb_range):  # check residue number and get pdb rows of sthis residue 
                 line = list(pdb_out_list[k])
                 if pdb_in_list[k][13:16] in color:  # check if the atom is in color list, and change bfactor if yes 
                     re = list(str("%.2f" % reactivities_df.iloc[i]["react"]))
+                    print("kupka", re)
+                    
                     put = [" ", " "]+re
                     line[60:66] = put
                     line = ''.join(line)
@@ -153,26 +159,38 @@ def read_sequence():
     #s.get_rnapuzzle_ready()
     #print(s)
     
-    print(pdbSeq)    
+    print(pdbSeq, 'tu')    
     #print(seq)
     lcs = ','.join(longest_common_substring(seq, pdbSeq))
-
+    print(lcs)
     pdb_ind = pdbSeq.find(lcs)
     #print(pdb_ind, 'pdb_ind')
     seq_ind = seq.find(lcs)
+    print(seq_ind,"seq_ind")
     #print(seq_ind, 'seq_ind')
     #print(lcs, 'lcs')
     seq_end = seq[::-1].find(lcs[::-1])
+    print(seq[::-1])
+    print(lcs[::-1])
+#    if len(seq[::-1]) == len(lcs[::-1]):
+#            seq_end = len(seq)
+        
+    print(seq_end,"seq_end")
     #print(seq[::-1])
     #print(lcs[::-1])
     #print(seq_end, 'seq_end')
     pdb_rna = ''.join([c for c in pdbSeq if c.isupper()])
+    print(pdb_rna)
     pdb_end = pdb_rna[::-1].find(lcs[::-1])-1
+#    if len(pdb_rna[::-1]) == len(lcs[::-1]):
+#        pdb_end = len(seq)
+    print(pdb_end)
     #print(pdb_rna[::-1])
     #print(lcs[::-1])
     #print(pdb_end, 'pdb_end')
     pdb_len = len(pdbSeq)
     #print(','.join(substr))
+    print(pdb_ind, seq_ind, seq_end, pdb_end, pdb_len)
     return pdb_ind, seq_ind, seq_end, pdb_end, pdb_len
 
 def longest_common_substring(S, T):
