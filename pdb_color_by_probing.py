@@ -82,6 +82,9 @@ def change_bfactor():
                     re = list(str("%.2f" % reactivities_base_df.iloc[i]["react"]))
                 #print("kupka")
                     put = [" ", " "]+re
+                    if re == ['-', '9', '9', '9', '.', '0', '0']:
+                        re = [" ", "-", "1", ".", "0", "0"]
+                        put = re
                 #print(put,"put")
                     line[60:66] = put
                     line = ''.join(line)
@@ -89,6 +92,10 @@ def change_bfactor():
                 #print(list(str("%.2f" % reactivities_back_df.iloc[i]["react"])), "re")
                     re = list(str("%.2f" % reactivities_back_df.iloc[i]["react"]))
                     put = [" ", " "]+re
+                    if re == ['-', '9', '9', '9', '.', '0', '0']:
+                        re = [" ", "-", "1", ".", "0", "0"]
+                        put = re
+                        
                     line[60:66] = put
                     line = ''.join(line)
                 pdb_out_list[k] = line
