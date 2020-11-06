@@ -125,11 +125,11 @@ def read_react(reactivity):
         count = sum(1 for _ in f)
 
     if count >2:  # assume its reactivtity format
-        react_df = pd.read_csv(reactivity, sep=' ',index_col=False,header=None, 
+        react_df = pd.read_csv(reactivity, sep=' ',index_col=False,header=None, encoding = "ISO-8859-1", 
                     names=["num","react"])
         react_df.set_index("num", inplace=True)
     else:  # assum its oneline format - copied from sheet
-        react_df = pd.read_csv(reactivity, sep='\t',index_col=False,header=None)
+        react_df = pd.read_csv(reactivity, sep='\t',index_col=False,header=None, encoding = "ISO-8859-1")
         react_df = react_df.transpose()[0]
         react_df = pd.DataFrame(react_df)
         react_df.index.name="num"
