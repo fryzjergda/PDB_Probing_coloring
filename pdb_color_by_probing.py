@@ -43,7 +43,7 @@ def check_color():
     
 def read_pdb():
     pdb_list = []
-    with open(in_pdb) as f:
+    with open(in_pdb, "rb") as f:
         for line in f:
             if (line[:6] == "ATOM  " and line[16] != "B" and line[16] != "G") or \
                 (line[:6] == "HETATM" and line[17:20] == "GTP" and \
@@ -121,7 +121,7 @@ def write_output(pdb_out_list):
 
 def read_react(reactivity):
 
-    with open(reactivity) as f:  # check number of lines in reactivity input file
+    with open(reactivity, "rb") as f:  # check number of lines in reactivity input file
         count = sum(1 for _ in f)
 
     if count >2:  # assume its reactivtity format
