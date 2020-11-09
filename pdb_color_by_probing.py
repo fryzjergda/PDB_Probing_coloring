@@ -3,6 +3,7 @@
 
 import pandas as pd
 import argparse
+import os
 
 
 def argument_parser():
@@ -45,6 +46,7 @@ def read_pdb():
     pdb_list = []
     with open(in_pdb, "rb") as f:
         for line in f:
+            line = line.decode("UTF-8")
             if (line[:6] == "ATOM  " and line[16] != "B" and line[16] != "G") or \
                 (line[:6] == "HETATM" and line[17:20] == "GTP" and \
                 line[15] != "B" and line[15] != "G" and line[14] != "B" and \
@@ -101,9 +103,8 @@ def change_bfactor():
                 pdb_out_list[k] = line
 
 
-
     write_output(pdb_out_list)
-    
+        
     
 def write_output(pdb_out_list):
 
@@ -142,6 +143,11 @@ def read_react(reactivity):
 
 if __name__ == '__main__':
 
+        
+    try:
+        os.system("dos2unix ./*")
+    except:
+        pass
                      
     in_pdb, out_pdb, base_in, back_in = argument_parser()
     
