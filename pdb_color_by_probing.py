@@ -54,6 +54,7 @@ def read_pdb():
                 pdb_list.append(line)
             elif line[:6] == "TER   ":
                 break
+    
     return pdb_list
 
 
@@ -71,27 +72,22 @@ def change_bfactor():
     
     pdb_out_list = pdb_in_list.copy()
     
-    for i in range(0, len(reactivities_base_df)):
-        print(i)
-        print(reactivities_base_df.iloc[i], "df") 
+    
+    for i in range(0, len(reactivities_back_df)):
+        #print(reactivities_base_df.iloc[i], "df") 
         for k in range(0, len(pdb_in_list)):
             if (int(pdb_in_list[k][22:26]) == i+1):
                 line = list(pdb_out_list[k])
-            #print(k, len(pdb_in_list))
-                if pdb_in_list[k][13:16] in base:
-                #print(list(str("%.2f" % reactivities_base_df.iloc[i]["react"])))
+                if pdb_in_list[k][12:16].replace(" ","") not in base:
             
-                    re = list(str("%.2f" % reactivities_base_df.iloc[i]["react"]))
-                #print("kupka")
+                    re = list(str("%.2f" % reactivities_back_df.iloc[i]["react"]))
                     put = [" ", " "]+re
                     if re == ['-', '9', '9', '9', '.', '0', '0']:
                         re = [" ", "-", "1", ".", "0", "0"]
                         put = re
-                #print(put,"put")
                     line[60:66] = put
                     line = ''.join(line)
-                elif pdb_in_list[k][13:16] in backbone:
-                #print(list(str("%.2f" % reactivities_back_df.iloc[i]["react"])), "re")
+                elif pdb_in_list[k][12:16].replace(" ","") in backbone:
                     re = list(str("%.2f" % reactivities_back_df.iloc[i]["react"]))
                     put = [" ", " "]+re
                     if re == ['-', '9', '9', '9', '.', '0', '0']:
@@ -103,7 +99,13 @@ def change_bfactor():
                 pdb_out_list[k] = line
 
 
-    write_output(pdb_out_list)
+    out_list = ""
+
+    for i in range(0, len(pdb_out_list)):
+        out_list += ''.join(pdb_out_list[i])
+        
+        
+    write_output(out_list)
         
     
 def write_output(pdb_out_list):
@@ -115,8 +117,8 @@ def write_output(pdb_out_list):
         outfile_name = out_pdb
 
     out= open(outfile_name, "w")
-    for i in pdb_out_list:
-        out.write(i)
+
+    out.write(pdb_out_list)
     out.close()
                     
 
@@ -126,7 +128,7 @@ def read_react(reactivity):
         count = sum(1 for _ in f)
 
     if count >2:  # assume its reactivtity format
-        react_df = pd.read_csv(reactivity, sep=' ',index_col=False,header=None, encoding = "ISO-8859-1", 
+        react_df = pd.read_csv(reactivity, sep='\s+',index_col=False,header=None, encoding = "ISO-8859-1", 
                     names=["num","react"])
         react_df.set_index("num", inplace=True)
     else:  # assum its oneline format - copied from sheet
@@ -144,21 +146,25 @@ def read_react(reactivity):
 if __name__ == '__main__':
 
         
-    try:
-        os.system("dos2unix ./*")
-    except:
-        pass
+    #try:
+    #    os.system("dos2unix ./*")
+    #except:
+    #    pass
                      
     in_pdb, out_pdb, base_in, back_in = argument_parser()
     
     pdb_in_list = read_pdb()
-    print(pdb_in_list)
     
-    reactivities_base_df = read_react(base_in)
-    print(reactivities_base_df)
+    if base_in:
+        reactivities_base_df = read_react(base_in)
+    else:
+        reactivities_base_df = ""
     
-    reactivities_back_df = read_react(back_in)
-    print(reactivities_back_df)
+    if back_in:    
+        reactivities_back_df = read_react(back_in)
+        print(reactivities_back_df)
+    else:
+        print("else_back")
     
     
     change_bfactor()
